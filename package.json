@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "publint && modern build",
+    "prepare": "modern build && publint",
     "preview": "bun run ./preview.ts",
     "dev": "modern dev",
     "build": "modern build",
