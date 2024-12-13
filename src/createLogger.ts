@@ -5,6 +5,16 @@ import type { Options, LogMessage, Logger, LogMethods, LogTypes } from './types'
 import type { gradient as TGradient } from './browser/gradient';
 import type { finalLog as TFinalLog, getLabel as TGetLabel } from './browser/utils';
 
+function validateOptions(options: Options): Options {
+  const validatedOptions = { ...options };
+  if (options.labels && typeof options.labels !== 'object') {
+    throw new Error('Labels must be an object');
+  }
+  if (options.level && typeof options.level !== 'string') {
+    throw new Error('Level must be a string');
+  }
+  return validatedOptions;
+}
 
 export let createLogger = (options: Options = {}, { getLabel, handleError, finalLog, greet, LOG_TYPES }: {
   LOG_TYPES: LogTypes;
@@ -15,8 +25,9 @@ export let createLogger = (options: Options = {}, { getLabel, handleError, final
   handleError: (msg: string) => string,
 
 }) => {
-  let maxLevel = options.level || 'log';
-  let customLabels = options.labels || {};
+  const validatedOptions = validateOptions(options);
+  let maxLevel = validatedOptions.level || 'log';
+  let customLabels = validatedOptions.labels || {};
 
   let log = (type: LogMethods, message?: LogMessage, ...args: string[]) => {
     if (LOG_LEVEL[LOG_TYPES[type].level] > LOG_LEVEL[maxLevel]) {
