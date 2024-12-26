@@ -6,7 +6,7 @@ export function getLabel(type: LogMethods, logType: LogType, labels: Labels) {
   if ('label' in logType) {
     const labelText = type !== 'log' ? labels[type] : undefined;
     label = [(labelText || logType.label || '')];
-    
+
     if (logType.color) {
       const colorResult = logType.color(label[0]);
       if (Array.isArray(colorResult) && colorResult.length === 2) {
@@ -25,13 +25,13 @@ export function getLabel(type: LogMethods, logType: LogType, labels: Labels) {
 
 export function finalLog(label: string[], text: string, args: string[], message?: LogMessage) {
   if (label.length) {
-    //  gradient
     if (Array.isArray(message)) {
-      console.log(...label, ...message)
+      console.log(...label, ...message, ...args)
     } else {
-      console.log(...label, text)
+      console.log(...label, text, ...args)
     }
   } else {
+    // greet log
     Array.isArray(message) ? console.log(...message) : console.log(text, ...args)
   }
 }

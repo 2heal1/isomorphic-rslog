@@ -64,7 +64,7 @@ describe('logger', () => {
     console.log = vi.fn();
     const error = new Error('test error');
     logger.error(error);
-    
+
     const calls = (console.log as Mock).mock.calls;
     expect(calls.length).toBe(1);
     expect(calls[0][0]).toContain('error');
@@ -133,7 +133,7 @@ describe('logger', () => {
     const customError = new Error('Custom error');
     (customError as any).customProp = 'test';
     logger.error(customError);
-    
+
     const calls = (console.log as Mock).mock.calls;
     expect(calls.length).toBe(1);
     const output = calls[0][0].replace(/\u001b\[\d+m/g, '');
@@ -194,7 +194,7 @@ describe('label formatting', () => {
         error: '',
       }
     });
-    
+
     logger.info('message');
     logger.warn('message');
     logger.error('message');
@@ -208,7 +208,7 @@ describe('label formatting', () => {
         warn: 'AnotherVeryLongLabel',
       }
     });
-    
+
     logger.info('message');
     logger.warn('message');
     expect((console.log as Mock).mock.calls).toMatchSnapshot();
@@ -223,10 +223,10 @@ describe('error handling', () => {
   test('should handle circular references in error objects', () => {
     const circularObj: any = { foo: 'bar' };
     circularObj.self = circularObj;
-    
+
     const error = new Error('Circular reference error');
     (error as any).circular = circularObj;
-    
+
     logger.error(error);
     expect((console.log as Mock).mock.calls[0][0]).toContain('Circular reference error');
   });
@@ -236,7 +236,7 @@ describe('error handling', () => {
       message: 'Error-like object',
       name: 'CustomError'
     };
-    
+
     logger.error(errorLike);
     expect((console.log as Mock).mock.calls).toMatchSnapshot();
   });
@@ -248,7 +248,7 @@ describe('error handling', () => {
         return 'Custom toString message';
       }
     }
-    
+
     const error = new CustomError('message');
     logger.error(error);
     const calls = (console.log as Mock).mock.calls;
@@ -266,23 +266,23 @@ describe('log level filtering', () => {
 
   test('should respect error level', () => {
     const logger = createLogger({ level: 'error' });
-    
+
     logger.debug('debug');
     logger.info('info');
     logger.warn('warn');
     logger.error('error');
-    
+
     const calls = (console.log as Mock).mock.calls;
     expect(calls.length).toBe(1);
     expect(calls[0][0]).toContain('error');
   });
 
   test('should handle invalid log level gracefully', () => {
-    const logger = createLogger({ 
+    const logger = createLogger({
       // @ts-expect-error testing invalid level
-      level: 'invalid' 
+      level: 'invalid'
     });
-    
+
     logger.info('should still work');
     expect((console.log as Mock).mock.calls.length).toBe(1);
   });
